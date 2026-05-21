@@ -12,11 +12,13 @@ if (WITH_ANIMICA)
     list(APPEND HEADERS_CRYPTO
         src/crypto/animica/AnimicaHash.h
         src/crypto/animica/AnimicaWorker.h
+        src/crypto/animica/AnimicaAicfDelegate.h
     )
 
     list(APPEND SOURCES_CRYPTO
         src/crypto/animica/AnimicaHash.cpp
         src/crypto/animica/AnimicaWorker.cpp
+        src/crypto/animica/AnimicaAicfDelegate.cpp
     )
 else()
     remove_definitions(/DXMRIG_ALGO_ANIMICA)
