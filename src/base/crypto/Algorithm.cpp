@@ -102,6 +102,11 @@ const char* Algorithm::kGHOSTRIDER      = "ghostrider";
 const char* Algorithm::kGHOSTRIDER_RTM  = "ghostrider";
 #endif
 
+#ifdef XMRIG_ALGO_ANIMICA
+const char *Algorithm::kANIMICA         = "animica";
+const char *Algorithm::kANIMICA_SHA3    = "animica";
+#endif
+
 
 #define ALGO_NAME(ALGO)         { Algorithm::ALGO, Algorithm::k##ALGO }
 #define ALGO_ALIAS(ALGO, NAME)  { NAME, Algorithm::ALGO }
@@ -164,6 +169,10 @@ static const std::map<uint32_t, const char *> kAlgorithmNames = {
 
 #   ifdef XMRIG_ALGO_GHOSTRIDER
     ALGO_NAME(GHOSTRIDER_RTM),
+#   endif
+
+#   ifdef XMRIG_ALGO_ANIMICA
+    ALGO_NAME(ANIMICA_SHA3),
 #   endif
 };
 
@@ -282,6 +291,13 @@ static const std::map<const char *, Algorithm::Id, aliasCompare> kAlgorithmAlias
 #   ifdef XMRIG_ALGO_GHOSTRIDER
     ALGO_ALIAS_AUTO(GHOSTRIDER_RTM), ALGO_ALIAS(GHOSTRIDER_RTM, "ghostrider/rtm"),
                                      ALGO_ALIAS(GHOSTRIDER_RTM, "gr"),
+#   endif
+
+#   ifdef XMRIG_ALGO_ANIMICA
+    ALGO_ALIAS_AUTO(ANIMICA_SHA3),   ALGO_ALIAS(ANIMICA_SHA3,   "animica/sha3"),
+                                     ALGO_ALIAS(ANIMICA_SHA3,   "animica-sha3"),
+                                     ALGO_ALIAS(ANIMICA_SHA3,   "anm"),
+                                     ALGO_ALIAS(ANIMICA_SHA3,   "anm/sha3"),
 #   endif
 };
 
