@@ -1,26 +1,26 @@
-/* XMRig — Animica SHA3-256 OpenCL kernel
+/* XMRig -- Animica SHA3-256 OpenCL kernel
  *
  * One work-item computes one nonce: digest = SHA3-256(prefix || nonce_le8),
  * compares against a 256-bit big-endian target, and if it's a share, writes
  * the nonce + the digest into the host-visible result buffer.
  *
  * Inputs:
- *   prefix       __constant uint8 *  — the per-job 32-byte SHA3 prefix
- *   prefix_len   uint                — typically 32 (Animica's stratum-v1 carries prevhash here)
- *   start_nonce  ulong               — base nonce; this kernel's nonce = start_nonce + global_id(0)
- *   target_be    __constant uint8 *  — 32-byte BE target. share iff int256_be(digest) <= target_be
- *   results      __global uint *     — [count, nonce_lo32, nonce_hi32, digest_u32 x 8, repeat...]
- *   max_results  uint                — capacity guard so we don't overrun results[]
+ *   prefix       __constant uint8 *  -- the per-job 32-byte SHA3 prefix
+ *   prefix_len   uint                -- typically 32 (Animica's stratum-v1 carries prevhash here)
+ *   start_nonce  ulong               -- base nonce; this kernel's nonce = start_nonce + global_id(0)
+ *   target_be    __constant uint8 *  -- 32-byte BE target. share iff int256_be(digest) <= target_be
+ *   results      __global uint *     -- [count, nonce_lo32, nonce_hi32, digest_u32 x 8, repeat...]
+ *   max_results  uint                -- capacity guard so we don't overrun results[]
  *
  * The Keccak-f permutation is open-coded (24 rounds, 5x5 lanes of u64).
  * Rate r=1088 bits = 136 bytes, capacity=512. NIST FIPS-202 padding
- * (0x06 || ... || 0x80) — same byte the C++ AnimicaHash.cpp uses, so
+ * (0x06 || ... || 0x80) -- same byte the C++ AnimicaHash.cpp uses, so
  * digests bit-match the CPU implementation. The per-nonce work is one
  * absorb of the (prefix || nonce_le8 || padding) block and a single
  * keccakf, then squeeze the first 32 bytes.
  *
  * The kernel is intentionally short: ~150 lines including round
- * constants and Keccak helpers. Throughput on a midrange GPU (5–10
+ * constants and Keccak helpers. Throughput on a midrange GPU (5-10
  * GH/s) is dominated by `keccakf24`; this implementation keeps state
  * in registers across the rounds and avoids global-memory access
  * inside the hot loop.

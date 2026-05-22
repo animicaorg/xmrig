@@ -165,6 +165,15 @@ AnimicaAicfDelegate::Result AnimicaAicfDelegate::run(
         ::dup2(out_pipe[1], STDOUT_FILENO);
         ::close(in_pipe[1]);
         ::close(out_pipe[0]);
+        // Steer the LLM runner away from any GPU xmrig is using for
+        // hash-share mining. Without this, the runner's torch backend
+        // can grab CUDA context #0 and bring xmrig's GPU mining to a
+        // halt (or vice-versa — they OOM each other). Operators who
+        // want GPU inference for AICF should disable GPU mining (run
+        // with -t N --no-cuda --no-opencl) and unset the env vars
+        // we set here before invoking xmrig.
+        ::setenv("ANIMICA_AICF_DEVICE", "cpu", 1);
+        ::setenv("CUDA_VISIBLE_DEVICES", "", 1);
         ::execl(m_runnerPath.c_str(), m_runnerPath.c_str(), nullptr);
         ::_exit(127);
     }
