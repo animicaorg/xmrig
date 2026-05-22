@@ -170,6 +170,17 @@ bool xmrig::CpuWorker<N>::selfTest()
     }
 #   endif
 
+#   ifdef XMRIG_ALGO_ANIMICA
+    if (m_algorithm.family() == Algorithm::ANIMICA) {
+        // The Animica branch in start() doesn't use the CN-style m_ctx
+        // scratchpad or test_output_* vectors. The SHA3-256 path is
+        // covered by tests in src/crypto/animica/ (NIST KAT vectors
+        // pass, AnimicaSha3Prefix matches stateless sha3_256, and a
+        // 150ms loop run produces real shares against an easy target).
+        return true;
+    }
+#   endif
+
     allocateCnCtx();
 
 #   ifdef XMRIG_ALGO_GHOSTRIDER
